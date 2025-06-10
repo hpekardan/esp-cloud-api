@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/esp-dashboard-web/static/css/main.92c8d4eb.css",
+    "main.js": "/esp-dashboard-web/static/js/main.6f0ef9de.js",
+    "static/js/453.820b43ad.chunk.js": "/esp-dashboard-web/static/js/453.820b43ad.chunk.js",
+    "index.html": "/esp-dashboard-web/index.html",
+    "main.92c8d4eb.css.map": "/esp-dashboard-web/static/css/main.92c8d4eb.css.map",
+    "main.6f0ef9de.js.map": "/esp-dashboard-web/static/js/main.6f0ef9de.js.map",
+    "453.820b43ad.chunk.js.map": "/esp-dashboard-web/static/js/453.820b43ad.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.92c8d4eb.css",
+    "static/js/main.6f0ef9de.js"
+  ]
+}
