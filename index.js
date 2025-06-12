@@ -26,10 +26,12 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// Varsayılan anasayfa
 app.get("/", (req, res) => {
   res.send("ESP Cloud API çalışıyor 🚀");
 });
 
+// ✅ STATUS endpoint'i
 app.get("/status", (req, res) => {
   const filePath = path.join(__dirname, "data.json");
   fs.readFile(filePath, "utf8", (err, data) => {
