@@ -45,6 +45,13 @@ app.get('/status', (req, res) => {
   });
 });
 
+// 🔄 /control endpoint örnek (opsiyonel – slave'lere komut göndermek için)
+app.get('/control', (req, res) => {
+  const { mac, pin, cmd } = req.query;
+  console.log(`Komut alındı: MAC=${mac}, PIN=${pin}, CMD=${cmd}`);
+  res.send("Komut başarıyla alındı!");
+});
+
 // ✅ Test endpoint
 app.get('/', (req, res) => {
   res.send('ESP Cloud API çalışıyor 🚀');

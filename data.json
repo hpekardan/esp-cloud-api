@@ -1,0 +1,8 @@
+[
+  {
+    "mac": "AA:BB:CC:DD:EE:FF",
+    "temp": 24.5,
+    "hum": 40,
+    "analog": 650
+  }
+]
