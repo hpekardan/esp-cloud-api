@@ -26,6 +26,26 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// 🎯 CORS’u tüm kaynaklara aç:
+app.use(cors());
+
+app.get("/", (req, res) => {
+  res.send("ESP Cloud API çalışıyor 🚀");
+});
+
+app.get("/status", (req, res) => {
+  const filePath = path.join(__dirname, "data.json");
+  fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) return res.status(500).send("Sunucu hatası");
+    try {
+      res.json(JSON.parse(data));
+    } catch {
+      res.status(500).send("JSON hatası");
+    }
+  });
+});
+
+
 // Varsayılan anasayfa
 app.get("/", (req, res) => {
   res.send("ESP Cloud API çalışıyor 🚀");
