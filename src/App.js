@@ -8,26 +8,25 @@ function App() {
 
   const digitalPins = ["D2", "D3", "D4", "D5", "D6", "D7"];
 
-  useEffect(() => {
-    const fetchData = () => {
-      fetch(endpoint)
-        .then(res => res.json())
-        .then(setData)
-        .catch(err => console.error("Veri alınamadı:", err));
-    };
-
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleControl = (mac, pin, cmd) => {
-    const url = `${controlUrl}?mac=${mac}&pin=${pin}&cmd=${cmd}`;
-    fetch(url)
-      .then(res => res.text())
-      .then(msg => console.log(`Cevap: ${msg}`))
-      .catch(err => console.error("Komut gönderilemedi:", err));
+useEffect(() => {
+  const fetchData = () => {
+    console.log("🔍 Fetching data from:", endpoint);
+    fetch(endpoint)
+      .then(res => {
+        console.log("✅ Status response status:", res.status);
+        return res.json();
+      })
+      .then(json => {
+        console.log("📊 JSON received:", json);
+        setData(json);
+      })
+      .catch(err => console.error("❌ Veri alınamadı:", err));
   };
+
+  fetchData();
+  const interval = setInterval(fetchData, 5000);
+  return () => clearInterval(interval);
+}, [endpoint]);
 
   const handleAnalogChange = (mac, value) => {
     fetch(`http://${masterIP}/control?mac=${mac}&pin=analog&cmd=${value}`)

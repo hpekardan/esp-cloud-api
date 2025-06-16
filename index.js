@@ -1,57 +1,62 @@
 //console.log("ESP Cloud API çalışıyor");
 //https://esp-cloud-api-production.up.railway.app/
-/* const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-
-const app = express();
-const port = process.env.PORT || 3001;
-
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-
-// Basit test endpoint
-app.get("/", (req, res) => {
-  res.send("ESP Cloud API çalışıyor 🚀");
-});
-
-app.listen(port, () => {
-  console.log(`Sunucu http://localhost:${port} adresinde çalışıyor`);
-});
-*/
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// ✅ CORS tüm kaynaklara açık
 app.use(cors());
+app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  res.send("ESP Cloud API çalışıyor 🚀");
-});
+// 🟢 POST ile veri güncelleme endpoint’i
+app.post("/update", (req, res) => {
+  const incoming = req.body;
+  if (!incoming.mac) return res.status(400).send("MAC eksik");
 
-// ✅ STATUS endpoint'i
-app.get("/status", (req, res) => {
   const filePath = path.join(__dirname, "data.json");
-  fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Veri okunamadı:", err);
-      return res.status(500).send("Sunucu hatası");
-    }
+  fs.readFile(filePath, "utf8", (err, rawData) => {
+    let devices = [];
     try {
-      res.json(JSON.parse(data));
-    } catch (parseError) {
-      res.status(500).send("Geçersiz JSON");
+      devices = JSON.parse(rawData || "[]");
+    } catch {}
+
+    // Aynı MAC varsa güncelle, yoksa ekle
+    const index = devices.findIndex(d => d.mac === incoming.mac);
+    if (index !== -1) {
+      devices[index] = { ...devices[index], ...incoming };
+    } else {
+      devices.push(incoming);
     }
+
+    fs.writeFile(filePath, JSON.stringify(devices, null, 2), (err) => {
+      if (err) {
+        console.error("Yazma hatası:", err);
+        return res.status(500).send("Yazılamadı");
+      }
+      res.send("Veri güncellendi");
+    });
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`ESP Cloud API ${PORT} portunda çalışıyor 🚀`);
-});
+// 🔄 GET /status endpoint'i (React buradan veri çekiyor)
+app.get("/status", (req, res) => {
+  fs.readFile(DATA_FILE, "utf8", (err, rawData) => {
+    if (err) {
+      console.error("Veri okuma hatası:", err);
+      return res.status(500).send("Veri okunamadı");
+    }
 
+    try {
+      const data = JSON.parse(rawData || "[]");
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.json(data);
+    } catch (parseErr) {
+      console.error("Veri bozuk:", parseErr);
+      res.status(500).send("Veri bozuk");
+    }
+  });
+});
